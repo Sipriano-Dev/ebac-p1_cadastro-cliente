@@ -11,14 +11,44 @@ public class Cliente {
     private String cidade;
     private String estado;
 
-    public Cliente(String nome, String cpf, String tel, String end, String num, String cidade, String estado) {
-        this.nome = nome;
+    public Cliente() {
+
+    }
+
+
+    public Cliente(String cpf, String nome, String tel, String end, String num, String cidade, String estado) {
         this.cpf = Long.valueOf(cpf.trim());
-        this.tel = Long.valueOf(tel.trim());
-        this.end = end;
-        this.numero = Integer.valueOf(num.trim());
-        this.cidade = cidade;
-        this.estado = estado;
+        if (nome == null) {
+            this.nome = null;
+        } else {
+            this.nome = nome.strip();
+        }
+        if (tel == null) {
+            this.tel = null;
+        } else {
+            this.tel = Long.valueOf(tel.strip());
+        }
+        if (end == null) {
+            this.end = null;
+        } else {
+            this.end = end.strip();
+        }
+        if (num == null) {
+            numero = null;
+        } else {
+            this.numero = Integer.valueOf(num.strip());
+        }
+        if (cidade == null) {
+            this.cidade = null;
+        } else {
+            this.cidade = cidade.strip();
+        }
+        if (estado == null) {
+            this.estado = null;
+        } else {
+            this.estado = estado.strip();
+        }
+
 
     }
 

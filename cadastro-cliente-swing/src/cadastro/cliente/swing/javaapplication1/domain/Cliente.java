@@ -31,6 +31,13 @@ public class Cliente {
         this.estado = estado;
         
     }
+    
+    public Cliente(String nome, String cpf) {
+        this.nome = nome;
+        this.cpf = Long.valueOf(cpf);
+    }
+    
+    
 
     public String getNome() {
         return nome;

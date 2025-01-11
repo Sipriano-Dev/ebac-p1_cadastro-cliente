@@ -4,7 +4,11 @@
  */
 package cadastro.cliente.swing;
 
+import javaapplication1.dao.ClienteMapDAO;
+import javaapplication1.dao.IClienteDAO;
+import javaapplication1.domain.Cliente;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -12,11 +16,12 @@ import javax.swing.JOptionPane;
  */
 public class TelaPrincipal extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaPrincipal
-     */
+    private DefaultTableModel modelo = new DefaultTableModel();
+    private IClienteDAO clienteDAO = new ClienteMapDAO();
+    
     public TelaPrincipal() {
         initComponents();
+        initCustomComponents();
     }
 
     /**
@@ -133,6 +138,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Existem campos a serem preenchidos", "ATENÇÃO",JOptionPane.INFORMATION_MESSAGE);
             return;
         } 
+        
+        Cliente cliente = new Cliente(nome, cpf);
+        Boolean isCadastrado = this.clienteDAO.cadastrar(cliente);
+        
+        if (isCadastrado) {
+          modelo.addRow(new Object[]{cliente.getNome(), cliente.getCpf()});
+          limparCampos();
+          JOptionPane.showMessageDialog(null, "Salvo", "ATENÇÃO",JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Cliente já se encontra cadastrado", "ATENÇÃO",JOptionPane.INFORMATION_MESSAGE);
+        }
+        
         JOptionPane.showMessageDialog(null, "Salvo", "ATENÇÃO",JOptionPane.INFORMATION_MESSAGE);
 
     }//GEN-LAST:event_btnSalvarActionPerformed
@@ -193,4 +210,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
         }
         return true;
     }
+
+    private void initCustomComponents() {
+        modelo.addColumn("Nome");
+        modelo.addColumn("CPF");
+        
+        tabelaClientes.setModel(modelo); 
+    }
+    
+    private void limparCampos() {
+        txtNome.setText("");
+        txtCPF.setText("");
+
+    }
+    
 }

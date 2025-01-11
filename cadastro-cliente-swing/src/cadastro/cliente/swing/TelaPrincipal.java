@@ -40,6 +40,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         txtCPF = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaClientes = new javax.swing.JTable();
+        btnExcluir = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItemSair = new javax.swing.JMenuItem();
@@ -68,7 +69,19 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabelaClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaClientesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabelaClientes);
+
+        btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("Opções");
 
@@ -91,7 +104,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnSalvar)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnSalvar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnExcluir))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblNome, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -113,7 +129,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
                     .addComponent(lblCPF)
                     .addComponent(txtCPF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
-                .addComponent(btnSalvar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSalvar)
+                    .addComponent(btnExcluir))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(81, Short.MAX_VALUE))
@@ -145,14 +163,45 @@ public class TelaPrincipal extends javax.swing.JFrame {
         if (isCadastrado) {
           modelo.addRow(new Object[]{cliente.getNome(), cliente.getCpf()});
           limparCampos();
-          JOptionPane.showMessageDialog(null, "Salvo", "ATENÇÃO",JOptionPane.INFORMATION_MESSAGE);
+          JOptionPane.showMessageDialog(null, "Salvo", "INFO",JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(null, "Cliente já se encontra cadastrado", "ATENÇÃO",JOptionPane.INFORMATION_MESSAGE);
         }
         
-        JOptionPane.showMessageDialog(null, "Salvo", "ATENÇÃO",JOptionPane.INFORMATION_MESSAGE);
+       
 
     }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void tabelaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaClientesMouseClicked
+        int linhaSelecionada = tabelaClientes.getSelectedRow();
+        Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
+        
+        Cliente cliente = this.clienteDAO.consultar(cpf);
+        txtNome.setText(cliente.getNome());
+        txtCPF.setText(String.valueOf(cliente.getCpf()));
+    }//GEN-LAST:event_tabelaClientesMouseClicked
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+      int linhaSelecionada = tabelaClientes.getSelectedRow();
+        
+        if (linhaSelecionada >= 0) {
+            int result = JOptionPane.showConfirmDialog(this,"Deseja realmente excluir este cliente?", "CUIDADO",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+        
+            if(result == JOptionPane.YES_OPTION){
+
+                Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
+                this.clienteDAO.excluir(cpf);
+                modelo.removeRow(linhaSelecionada);
+
+                JOptionPane.showMessageDialog(null, "Cliente excluído com sucesso", "Sucesso",JOptionPane.INFORMATION_MESSAGE);
+                limparCampos();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Nenhum cliente selecionado.", "ERRO",JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -190,6 +239,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
